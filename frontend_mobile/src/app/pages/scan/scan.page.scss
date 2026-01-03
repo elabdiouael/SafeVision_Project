@@ -1,0 +1,179 @@
+// Variables
+$primary: #3880ff;
+$bg-light: #f4f5f8;
+
+.scan-content {
+  --background: #{$bg-light};
+}
+
+.container {
+  padding: 30px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+
+  .header-text {
+    margin-bottom: 30px;
+    h2 { font-weight: 800; color: #333; margin: 0; }
+    p { color: #888; margin-top: 5px; }
+  }
+
+  .form-card {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+
+    .input-group {
+      margin-bottom: 20px;
+      label {
+        display: block;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+      }
+      input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+        outline: none;
+
+        &:focus {
+          border-color: $primary;
+        }
+      }
+    }
+
+    .scan-btn {
+      width: 100%;
+      padding: 15px;
+      background: $primary;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: transform 0.1s;
+
+      &:active {
+        transform: scale(0.98);
+      }
+      &:disabled {
+        opacity: 0.7;
+      }
+    }
+  }
+
+  // Resultat Styles
+  .result-card {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    animation: slideUp 0.4s ease-out;
+
+    .icon { font-size: 2.5rem; }
+    .text {
+      h3 { margin: 0 0 5px 0; font-weight: 800; }
+      p { margin: 0; font-size: 0.9rem; }
+    }
+
+    // Styles dynamiques
+    &.NORMAL {
+      background: #e7fbf0;
+      color: #1a8f4e;
+      border: 1px solid #c2f0d6;
+    }
+
+    &.ANOMALY {
+      background: #fdedef;
+      color: #c92a43;
+      border: 1px solid #fabcc5;
+    }
+  }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+// ... Variables w container ...
+
+// CAMERA STYLES
+.camera-section {
+  margin-bottom: 25px;
+
+  .camera-placeholder {
+    background: white;
+    border: 2px dashed #ccc;
+    border-radius: 16px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: $primary;
+      background: rgba($primary, 0.05);
+      .icon-circle { transform: scale(1.1); background: $primary; color: white; }
+    }
+
+    .icon-circle {
+      width: 50px;
+      height: 50px;
+      background: #f0f0f0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #666;
+      margin-bottom: 10px;
+      transition: all 0.3s ease;
+    }
+
+    p {
+      margin: 0;
+      font-weight: 600;
+      color: #888;
+    }
+  }
+
+  .image-preview {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+
+    img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+
+    ion-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      --padding-start: 0;
+      --padding-end: 0;
+    }
+  }
+}
+
+// ... Form card styles ...

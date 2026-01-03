@@ -1,0 +1,44 @@
+<app-navbar></app-navbar>
+
+<ion-content class="history-content">
+  <div class="container">
+    
+    <div class="header-section">
+      <h2>Journal d'Audit</h2>
+      <p>Suivi des interventions en temps réel</p>
+    </div>
+
+    <div *ngIf="loading" class="loading-state">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+      <p>Chargement des données...</p>
+    </div>
+
+    <div *ngIf="!loading && interventions.length === 0" class="empty-state">
+      <ion-icon name="folder-open-outline"></ion-icon>
+      <p>Aucune intervention enregistrée.</p>
+    </div>
+
+    <div class="audit-list" *ngIf="!loading && interventions.length > 0">
+      
+      <div class="audit-card" *ngFor="let item of interventions" [ngClass]="item.Status">
+        <div class="card-left">
+          <div class="status-indicator"></div>
+          <div class="info">
+            <span class="date">{{ item.Date }}</span>
+            <div class="metrics">
+              <span class="badge cable">📏 {{ item.Cable_m }}m</span>
+              <span class="badge time">⏱️ {{ item.Temps_h }}h</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-right">
+          <span class="status-text">{{ item.Status }}</span>
+          <span class="risk-score">Score: {{ item.Risk_Score }}</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</ion-content>

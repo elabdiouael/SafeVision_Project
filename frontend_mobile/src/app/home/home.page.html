@@ -1,0 +1,34 @@
+<app-navbar></app-navbar>
+
+<ion-content [fullscreen]="true">
+  <div class="hero-section">
+    <div class="content-box">
+      <h1>Bienvenue Risk Manager</h1>
+      <p>Tableau de bord de surveillance en temps réel.</p>
+      
+      <div class="stats-grid">
+        
+        <div class="stat-card">
+          <span class="number">{{ anomaliesCount }}</span>
+          <span class="label">Anomalies</span>
+        </div>
+
+        <div class="stat-card success">
+          <span class="number">{{ validatedCount }}</span>
+          <span class="label">Validées</span>
+        </div>
+
+        <div class="stat-card total">
+          <span class="number">{{ totalInterventions }}</span>
+          <span class="label">Total</span>
+        </div>
+
+      </div>
+
+      <ion-button routerLink="/scan" size="large" expand="block" class="cta-btn">
+        Nouvelle Intervention
+        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

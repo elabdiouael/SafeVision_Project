@@ -1,0 +1,76 @@
+.hero-section {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f5f8; // Gris fate7 jidan
+
+  .content-box {
+    text-align: center;
+    padding: 30px;
+    max-width: 500px;
+
+    h1 {
+      font-size: 2rem;
+      color: #1e1e1e;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+
+    p {
+      color: #666;
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+    }
+
+    .stats-grid {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 40px;
+
+      .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        min-width: 120px;
+
+        .number {
+          display: block;
+          font-size: 2rem;
+          font-weight: bold;
+          color: #eb445a; // Rouge par defaut
+        }
+        .label {
+          font-size: 0.9rem;
+          color: #888;
+          text-transform: uppercase;
+        }
+
+        &.success .number {
+          color: #2dd36f; // Khder
+        }
+      }
+    }
+
+    .cta-btn {
+      --border-radius: 10px;
+      --box-shadow: 0 4px 15px rgba(56, 128, 255, 0.3);
+      font-weight: 600;
+    }
+  }
+}
+.stat-card.total {
+  .number {
+    color: #3880ff; // Blue Ionic
+  }
+}
+
+// Responsive Grid (Bach yjiw 3 f ster)
+.stats-grid {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap; // Ila kan ecran sghir bzaf
+}
