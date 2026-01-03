@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { NavbarComponent } from 'src/app/components/navbar/navbar.component';
@@ -6,40 +6,49 @@ import { ApiService } from 'src/app/core/services/api';
 
 @Component({
   selector: 'app-history',
-  templateUrl: './history.page.html',
+  templateUrl: './history.page.html', // Kaychiir l fichier li lfouq
   styleUrls: ['./history.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule, NavbarComponent]
 })
-export class HistoryPage {
+export class HistoryPage implements OnInit {
   
-  interventions: any[] = [];
-  loading: boolean = true;
-  errorMsg: string = '';
+  history: any[] = [];
+  loading: boolean = false;
+  // Verify port (8000 wla 5000)
+  private baseUrl = 'http://127.0.0.1:8000'; 
 
   constructor(private apiService: ApiService) { }
 
-  // Hada kay-t'lanca kulla merra kat-dkhol l-page
-  ionViewWillEnter() {
-    this.loadHistory();
-  }
+  ngOnInit() { this.loadHistory(); }
+  
+  refreshHistory() { this.loadHistory(); }
 
   loadHistory() {
     this.loading = true;
     this.apiService.getHistory().subscribe({
       next: (data) => {
-        this.interventions = data;
+        this.history = data;
         this.loading = false;
+        console.log("Data reçue:", data); // Check Console
       },
       error: (err) => {
-        this.errorMsg = "Impossible de charger l'historique.";
+        console.error(err);
         this.loading = false;
       }
     });
   }
 
-  // Helper bach n-lowno l-Status
-  getStatusColor(status: string): string {
-    return status === 'NORMAL' ? 'success' : 'danger';
+  // Fonction 1: Voir Photo
+  openImage(imageId: string) {
+    if (!imageId || imageId === 'N/A') return;
+    window.open(`${this.baseUrl}/uploads/${imageId}`, '_blank');
+  }
+
+  // Fonction 2: PDF Download
+  downloadPDF(imageId: string) {
+    if (!imageId || imageId === 'N/A') return;
+    const pdfUrl = `${this.baseUrl}/api/report/${imageId}`;
+    window.open(pdfUrl, '_blank');
   }
 }

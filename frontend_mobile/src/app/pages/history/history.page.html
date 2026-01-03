@@ -1,44 +1,71 @@
-<app-navbar></app-navbar>
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Journal d'Audit</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="refreshHistory()">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
-<ion-content class="history-content">
-  <div class="container">
-    
-    <div class="header-section">
-      <h2>Journal d'Audit</h2>
-      <p>Suivi des interventions en temps réel</p>
-    </div>
-
-    <div *ngIf="loading" class="loading-state">
-      <ion-spinner name="crescent" color="primary"></ion-spinner>
-      <p>Chargement des données...</p>
-    </div>
-
-    <div *ngIf="!loading && interventions.length === 0" class="empty-state">
-      <ion-icon name="folder-open-outline"></ion-icon>
-      <p>Aucune intervention enregistrée.</p>
-    </div>
-
-    <div class="audit-list" *ngIf="!loading && interventions.length > 0">
-      
-      <div class="audit-card" *ngFor="let item of interventions" [ngClass]="item.Status">
-        <div class="card-left">
-          <div class="status-indicator"></div>
-          <div class="info">
-            <span class="date">{{ item.Date }}</span>
-            <div class="metrics">
-              <span class="badge cable">📏 {{ item.Cable_m }}m</span>
-              <span class="badge time">⏱️ {{ item.Temps_h }}h</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-right">
-          <span class="status-text">{{ item.Status }}</span>
-          <span class="risk-score">Score: {{ item.Risk_Score }}</span>
-        </div>
-      </div>
-
-    </div>
-
+<ion-content [fullscreen]="true" class="ion-padding">
+  
+  <div *ngIf="loading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Chargement des données...</p>
   </div>
+
+  <div *ngIf="!loading && history.length === 0" class="empty-state">
+    <ion-icon name="folder-open-outline"></ion-icon>
+    <p>Aucune intervention enregistrée.</p>
+  </div>
+
+  <ion-list *ngIf="!loading && history.length > 0">
+    <ion-item-group>
+      <ion-item-divider sticky>
+        <ion-label>Historique Récent</ion-label>
+      </ion-item-divider>
+
+      <ion-item *ngFor="let item of history" lines="full">
+        <ion-label>
+          <h2>Date: {{ item.Date }}</h2>
+          <p>
+            📏 Câble: <strong>{{ item.Cable_m }}m</strong> | 
+            ⏱️ Temps: <strong>{{ item.Temps_h }}h</strong>
+          </p>
+          <p>
+            Risk Score: 
+            <span [class.danger]="item.Risk_Score > 0.5" [class.safe]="item.Risk_Score <= 0.5">
+              {{ item.Risk_Score }}
+            </span>
+          </p>
+        </ion-label>
+
+        <ion-badge slot="end" [color]="item.Status === 'NORMAL' ? 'success' : 'danger'">
+          {{ item.Status }}
+        </ion-badge>
+
+        <div slot="end" class="actions-wrapper">
+          
+          <ion-button 
+            fill="clear" 
+            color="secondary"
+            *ngIf="item.Image_ID && item.Image_ID !== 'N/A'"
+            (click)="openImage(item.Image_ID)">
+            <ion-icon name="image-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+
+          <ion-button 
+            fill="clear" 
+            color="danger"
+            *ngIf="item.Image_ID && item.Image_ID !== 'N/A'"
+            (click)="downloadPDF(item.Image_ID)">
+            <ion-icon name="document-text-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+
+        </div>
+        </ion-item>
+    </ion-item-group>
+  </ion-list>
 </ion-content>

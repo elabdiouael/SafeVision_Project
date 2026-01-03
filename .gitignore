@@ -1,6 +1,9 @@
-node_modules/
-target/
-.mvn/
-dist/
-.vscode/
+venv/
+__pycache__/
+*.db
+*.pyc
 .DS_Store
+node_modules/
+dist/
+www/
+backend_api/uploads/

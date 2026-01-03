@@ -9,20 +9,26 @@
     </div>
 
     <div class="camera-section">
-      <div *ngIf="!capturedImage" class="camera-placeholder" (click)="takePicture()">
-        <div class="icon-circle">
-          <ion-icon name="camera"></ion-icon>
-        </div>
-        <p>Scanner le Rapport</p>
-      </div>
-
       <div *ngIf="capturedImage" class="image-preview">
         <img [src]="capturedImage" alt="Scan" />
         <ion-button fill="clear" color="danger" (click)="capturedImage = undefined">
           <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
         </ion-button>
       </div>
+
+      <div *ngIf="!capturedImage" class="camera-placeholder" (click)="takePicture()">
+        <div class="icon-circle">
+          <ion-icon name="camera"></ion-icon>
+        </div>
+        <p>Scanner avec Caméra</p>
+      </div>
+
+      <div class="upload-hack" style="text-align: center; margin-top: 15px;">
+        <p style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Ou importer un fichier (Test PC):</p>
+        <input type="file" (change)="onFileSelected($event)" accept="image/*">
+      </div>
     </div>
+
     <div class="form-card">
        <div class="input-group">
         <label>Longueur Câble (m)</label>
@@ -36,7 +42,7 @@
 
       <button class="scan-btn" (click)="lancerAnalyse()" [disabled]="loading">
         <span *ngIf="!loading">ANALYSER DONNÉES</span>
-        <span *ngIf="loading">Calcul en cours...</span>
+        <span *ngIf="loading">Traitement en cours...</span>
       </button>
     </div>
 

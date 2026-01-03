@@ -1,21 +1,13 @@
 from pydantic import BaseModel
+from typing import Optional
 
-# Hada chenou kantsnaw mn l-App (Input)
 class InterventionCreate(BaseModel):
     cable_metres: float
     temps_heures: float
+    # ZIDNA HADI: ID dyal tswira (Optional 7it machi dima kayn scan)
+    image_id: Optional[str] = None 
 
-    # Exemple bach yban f Documentation
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "cable_metres": 100.0,
-                "temps_heures": 5.0
-            }
-        }
-
-# Hada chenou ghadi n-reddo (Output)
 class PredictionResult(BaseModel):
-    status: str      # "NORMAL" wla "ANOMALY"
-    risk_score: float # Score: Koul ma kan negative, koul ma l-ghalat kbir
+    status: str
+    risk_score: float
     message: str
