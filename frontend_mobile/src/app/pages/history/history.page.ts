@@ -1,54 +1,61 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { NavbarComponent } from 'src/app/components/navbar/navbar.component';
 import { ApiService } from 'src/app/core/services/api';
+import { NavbarComponent } from 'src/app/components/navbar/navbar.component';
+import { addIcons } from 'ionicons';
+import { serverOutline, searchOutline, folderOpenOutline, resizeOutline, timeOutline, alertCircleOutline, shieldCheckmarkOutline, eyeOutline, downloadOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-history',
-  templateUrl: './history.page.html', // Kaychiir l fichier li lfouq
+  templateUrl: './history.page.html',
   styleUrls: ['./history.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, NavbarComponent]
+  imports: [IonicModule, CommonModule, FormsModule, NavbarComponent]
 })
 export class HistoryPage implements OnInit {
-  
+
   history: any[] = [];
-  loading: boolean = false;
-  // Verify port (8000 wla 5000)
-  private baseUrl = 'http://127.0.0.1:8000'; 
+  loading = true;
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService) {
+    addIcons({ 
+      serverOutline, searchOutline, folderOpenOutline, 
+      resizeOutline, timeOutline, alertCircleOutline, 
+      shieldCheckmarkOutline, eyeOutline, downloadOutline 
+    });
+  }
 
-  ngOnInit() { this.loadHistory(); }
-  
-  refreshHistory() { this.loadHistory(); }
+  ngOnInit() {
+    this.loadHistory();
+  }
 
   loadHistory() {
     this.loading = true;
     this.apiService.getHistory().subscribe({
       next: (data) => {
-        this.history = data;
-        this.loading = false;
-        console.log("Data reçue:", data); // Check Console
+        // Simulation delay for "Decrypting" effect
+        setTimeout(() => {
+          this.history = data;
+          this.loading = false;
+        }, 1000);
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.loading = false;
       }
     });
   }
 
-  // Fonction 1: Voir Photo
   openImage(imageId: string) {
     if (!imageId || imageId === 'N/A') return;
-    window.open(`${this.baseUrl}/uploads/${imageId}`, '_blank');
+    const imageUrl = this.apiService.getImageUrl(imageId);
+    window.open(imageUrl, '_blank');
   }
 
-  // Fonction 2: PDF Download
   downloadPDF(imageId: string) {
     if (!imageId || imageId === 'N/A') return;
-    const pdfUrl = `${this.baseUrl}/api/report/${imageId}`;
-    window.open(pdfUrl, '_blank');
+    // Logic download PDF
+    console.log("Downloading PDF for:", imageId);
   }
 }

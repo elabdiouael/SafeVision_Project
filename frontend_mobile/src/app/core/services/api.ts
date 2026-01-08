@@ -1,53 +1,47 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { InterventionCreate, PredictionResult } from '../models/intervention';
+import { AuthService } from './auth.service'; // Import AuthService
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
   
-  // تأكد أن الرابط هو هذا (ديال Python)
   private apiUrl = 'http://127.0.0.1:8000/api';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
-  /**
-   * 1. PREDICT: Envoie les chiffres à l'IA
-   */
+  // Helper bach nziido Header
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return headers;
+  }
+
   predict(data: InterventionCreate): Observable<PredictionResult> {
-    return this.http.post<PredictionResult>(`${this.apiUrl}/predict`, data)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.post<PredictionResult>(`${this.apiUrl}/predict`, data, { headers: this.getHeaders() })
+      .pipe(catchError(this.handleError));
   }
 
-  /**
-   * 2. HISTORY: Récupère l'historique
-   */
   getHistory(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/history`)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.get<any[]>(`${this.apiUrl}/history`, { headers: this.getHeaders() })
+      .pipe(catchError(this.handleError));
   }
 
-  /**
-   * 3. OCR: Envoie l'image pour analyse (HADI HIYA LI KANT NAQSA)
-   */
   scanIntervention(blob: Blob): Observable<any> {
     const formData = new FormData();
     formData.append('file', blob, 'scan.jpg');
-
-    return this.http.post<any>(`${this.apiUrl}/ocr`, formData)
-      .pipe(
-        catchError(this.handleError)
-      );
+    // Note: M3a FormData, matdirch Content-Type header, Browser kaydiro rasso
+    return this.http.post<any>(`${this.apiUrl}/ocr`, formData, { headers: this.getHeaders() })
+      .pipe(catchError(this.handleError));
   }
 
-  // --- ERROR HANDLER ---
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Erreur inconnue!';
     if (error.error instanceof ErrorEvent) {

@@ -1,12 +1,5 @@
-/*
- * App Global CSS
+/* * App Global CSS
  * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
  */
 
 /* Core CSS required for Ionic components to work properly */
@@ -18,28 +11,95 @@
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
 
-/* Optional CSS utils that can be commented out */
+/* Optional CSS utils */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+/* Dark Mode System */
 @import '@ionic/angular/css/palettes/dark.system.css';
 
-/* Global Overrides */
-ion-input, input {
-    background: #ffffff !important;
-    color: #333 !important;
-    --background: #ffffff !important;
-    --color: #333 !important;
+/* ==========================================================================
+   🚀 THEME: SAFEVISION QUANTUM 2080
+   ========================================================================== */
+
+/* 1. Import des Fonts Futuristes (Orbitron pour Titres, Rajdhani pour Texte) */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');
+
+:root {
+  /* Palette Cyberpunk */
+  --neon-blue: #00f3ff;
+  --neon-pink: #ff00ff;
+  --void-red: #ff2a2a;
+  --deep-black: #050505;
+  --glass-border: rgba(255, 255, 255, 0.1);
+  
+  /* Ionic Overrides (Global) */
+  --ion-background-color: var(--deep-black);
+  --ion-text-color: #ffffff;
+  --ion-font-family: 'Rajdhani', sans-serif;
+}
+
+/* 2. Body Reset & Scrollbar */
+body {
+  margin: 0;
+  background: var(--deep-black);
+  font-family: 'Rajdhani', sans-serif;
+  overflow-x: hidden; /* Prevents unwanted horizontal scroll outside our scroller */
+  
+  /* Custom Cyber Scrollbar */
+  &::-webkit-scrollbar {
+    width: 6px;
+    background: #000;
   }
+  &::-webkit-scrollbar-thumb {
+    background: var(--neon-blue);
+    border-radius: 0;
+  }
+}
+
+/* 3. Scanlines Overlay (Effet TV CRT) */
+.scanlines {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: linear-gradient(
+    to bottom, 
+    rgba(255,255,255,0), 
+    rgba(255,255,255,0) 50%, 
+    rgba(0,0,0,0.1) 50%, 
+    rgba(0,0,0,0.1)
+  );
+  background-size: 100% 4px;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* 4. Global Inputs Override (Cyber Style) 
+   Remplaçant l'ancien style blanc pour coller au thème sombre */
+ion-input, input, textarea, ion-textarea {
+  background: rgba(0, 243, 255, 0.05) !important;
+  color: #fff !important;
+  --background: rgba(0, 243, 255, 0.05) !important;
+  --color: #fff !important;
+  --placeholder-color: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  border-radius: 4px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+
+  &:focus-within {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+  }
+}
+
+/* 5. Global Typography Fixes */
+h1, h2, h3, ion-title {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 1px;
+}

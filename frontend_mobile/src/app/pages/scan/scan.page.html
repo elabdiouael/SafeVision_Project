@@ -1,60 +1,82 @@
 <app-navbar></app-navbar>
 
-<ion-content class="scan-content">
-  <div class="container">
+<ion-content [fullscreen]="true" class="scan-orbital">
+  
+  <div class="gyro-container">
+    <div class="gyro-ring outer"></div>
+    <div class="gyro-ring middle"></div>
+    <div class="gyro-ring inner"></div>
+    <div class="core-light"></div>
+  </div>
+
+  <div class="hud-interface">
     
-    <div class="header-text">
-      <h2>Saisie Intervention</h2>
-      <p>Utilisez l'IA pour valider ou scannez un rapport.</p>
+    <div class="hud-header">
+      <div class="signal-box">
+        <ion-icon name="wifi-outline" class="blink"></ion-icon>
+        <span>UPLINK ESTABLISHED</span>
+      </div>
+      <h1>ORBITAL <span class="highlight">SCAN</span></h1>
+      <div class="coords">LAT: 34.0522 // LNG: -118.2437</div>
     </div>
 
-    <div class="camera-section">
-      <div *ngIf="capturedImage" class="image-preview">
-        <img [src]="capturedImage" alt="Scan" />
-        <ion-button fill="clear" color="danger" (click)="capturedImage = undefined">
-          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
-        </ion-button>
-      </div>
+    <div class="drone-viewport">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      
+      <div class="hud-overlay">
+        <div class="target-reticle"></div>
+        <div class="scan-laser"></div> </div>
 
-      <div *ngIf="!capturedImage" class="camera-placeholder" (click)="takePicture()">
-        <div class="icon-circle">
-          <ion-icon name="camera"></ion-icon>
+      <div *ngIf="!capturedImage" class="camera-trigger" (click)="takePicture()">
+        <div class="hex-btn">
+          <ion-icon name="aperture-outline"></ion-icon>
         </div>
-        <p>Scanner avec Caméra</p>
+        <p>INITIALIZE OPTICAL SENSOR</p>
       </div>
 
-      <div class="upload-hack" style="text-align: center; margin-top: 15px;">
-        <p style="font-size: 0.8rem; color: #999; margin-bottom: 5px;">Ou importer un fichier (Test PC):</p>
-        <input type="file" (change)="onFileSelected($event)" accept="image/*">
+      <img *ngIf="capturedImage" [src]="capturedImage" class="captured-img" />
+      
+      <div *ngIf="capturedImage" class="retake-btn" (click)="capturedImage = undefined">
+        <ion-icon name="refresh-outline"></ion-icon> RETRY
       </div>
     </div>
 
-    <div class="form-card">
-       <div class="input-group">
-        <label>Longueur Câble (m)</label>
-        <input type="number" [(ngModel)]="data.cable_metres" placeholder="0.0">
-      </div>
+    <div class="tactical-form">
+      
+      <div class="input-row">
+        <div class="tech-input">
+          <label>DISTANCE (M)</label>
+          <input type="number" [(ngModel)]="data.cable_metres" placeholder="000.0" />
+          <div class="bar"></div>
+        </div>
 
-      <div class="input-group">
-        <label>Temps Passé (h)</label>
-        <input type="number" [(ngModel)]="data.temps_heures" placeholder="0.0">
+        <div class="tech-input">
+          <label>DURATION (H)</label>
+          <input type="number" [(ngModel)]="data.temps_heures" placeholder="00.0" />
+          <div class="bar"></div>
+        </div>
       </div>
 
       <button class="scan-btn" (click)="lancerAnalyse()" [disabled]="loading">
-        <span *ngIf="!loading">ANALYSER DONNÉES</span>
-        <span *ngIf="loading">Traitement en cours...</span>
+        <div class="btn-content">
+          <ion-icon name="scan-circle-outline"></ion-icon>
+          <span *ngIf="!loading">RUN DIAGNOSTIC SEQUENCE</span>
+          <span *ngIf="loading">PROCESSING DATA...</span>
+        </div>
+        <div class="scan-progress" *ngIf="loading"></div>
       </button>
+
     </div>
 
-    <div class="result-card" *ngIf="resultStatus" [ngClass]="resultStatus">
-      <div class="icon">
-        <ion-icon [name]="resultStatus === 'NORMAL' ? 'checkmark-circle' : 'alert-circle'"></ion-icon>
+    <div class="result-panel" *ngIf="resultStatus" [ngClass]="resultStatus">
+      <div class="res-header">
+        <ion-icon [name]="resultStatus === 'NORMAL' ? 'shield-checkmark-outline' : 'warning-outline'"></ion-icon>
+        <h3>{{ resultStatus === 'NORMAL' ? 'SECURE' : 'THREAT DETECTED' }}</h3>
       </div>
-      <div class="text">
-        <h3>{{ resultStatus === 'NORMAL' ? 'VALIDÉ' : 'ANOMALIE' }}</h3>
-        <p>{{ resultMessage }}</p>
-      </div>
+      <p class="res-body">{{ resultMessage }}</p>
     </div>
 
   </div>
+
 </ion-content>

@@ -1,179 +1,185 @@
-// Variables
-$primary: #3880ff;
-$bg-light: #f4f5f8;
+// VARIABLES
+$neon-green: #00ff9d;
+$neon-cyan: #00f3ff;
+$neon-red: #ff2a2a;
+$bg-deep: #050a10;
 
-.scan-content {
-  --background: #{$bg-light};
+.scan-orbital {
+  --background: #{$bg-deep};
+  font-family: 'Rajdhani', sans-serif;
 }
 
-.container {
-  padding: 30px 20px;
-  max-width: 600px;
-  margin: 0 auto;
+// --- 🪐 3D GYROSCOPE BACKGROUND ---
+.gyro-container {
+  position: absolute; top: 50%; left: 50%;
+  width: 600px; height: 600px;
+  transform: translate(-50%, -50%) perspective(1000px);
+  transform-style: preserve-3d;
+  z-index: 0; pointer-events: none; opacity: 0.6;
 
-  .header-text {
-    margin-bottom: 30px;
-    h2 { font-weight: 800; color: #333; margin: 0; }
-    p { color: #888; margin-top: 5px; }
-  }
-
-  .form-card {
-    background: white;
-    padding: 25px;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-
-    .input-group {
-      margin-bottom: 20px;
-      label {
-        display: block;
-        font-weight: 600;
-        color: #555;
-        margin-bottom: 8px;
-        font-size: 0.9rem;
-      }
-      input {
-        width: 100%;
-        padding: 12px 15px;
-        border: 2px solid #eee;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: border-color 0.3s;
-        outline: none;
-
-        &:focus {
-          border-color: $primary;
-        }
-      }
+  .gyro-ring {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    border-radius: 50%; border: 1px solid rgba($neon-green, 0.2);
+    box-shadow: 0 0 20px rgba($neon-green, 0.1);
+    
+    &.outer { 
+      border-top: 2px solid $neon-green; border-bottom: 2px solid $neon-green;
+      animation: spin-x 10s linear infinite;
     }
-
-    .scan-btn {
-      width: 100%;
-      padding: 15px;
-      background: $primary;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: transform 0.1s;
-
-      &:active {
-        transform: scale(0.98);
-      }
-      &:disabled {
-        opacity: 0.7;
-      }
+    &.middle {
+      width: 80%; height: 80%; top: 10%; left: 10%;
+      border: 1px dashed rgba($neon-cyan, 0.3);
+      animation: spin-y 7s linear infinite reverse;
+    }
+    &.inner {
+      width: 60%; height: 60%; top: 20%; left: 20%;
+      border-left: 4px solid $neon-cyan; border-right: 4px solid $neon-cyan;
+      animation: spin-z 5s linear infinite;
     }
   }
 
-  // Resultat Styles
-  .result-card {
-    margin-top: 25px;
-    padding: 20px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    animation: slideUp 0.4s ease-out;
-
-    .icon { font-size: 2.5rem; }
-    .text {
-      h3 { margin: 0 0 5px 0; font-weight: 800; }
-      p { margin: 0; font-size: 0.9rem; }
-    }
-
-    // Styles dynamiques
-    &.NORMAL {
-      background: #e7fbf0;
-      color: #1a8f4e;
-      border: 1px solid #c2f0d6;
-    }
-
-    &.ANOMALY {
-      background: #fdedef;
-      color: #c92a43;
-      border: 1px solid #fabcc5;
-    }
+  .core-light {
+    position: absolute; top: 50%; left: 50%; width: 20px; height: 20px;
+    background: $neon-green; border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 50px 20px rgba($neon-green, 0.2);
+    animation: pulse-core 2s infinite;
   }
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-// ... Variables w container ...
-
-// CAMERA STYLES
-.camera-section {
-  margin-bottom: 25px;
-
-  .camera-placeholder {
-    background: white;
-    border: 2px dashed #ccc;
-    border-radius: 16px;
-    height: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    &:hover {
-      border-color: $primary;
-      background: rgba($primary, 0.05);
-      .icon-circle { transform: scale(1.1); background: $primary; color: white; }
-    }
-
-    .icon-circle {
-      width: 50px;
-      height: 50px;
-      background: #f0f0f0;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: #666;
-      margin-bottom: 10px;
-      transition: all 0.3s ease;
-    }
-
-    p {
-      margin: 0;
-      font-weight: 600;
-      color: #888;
-    }
-  }
-
-  .image-preview {
-    position: relative;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-
-    img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      display: block;
-    }
-
-    ion-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(255, 255, 255, 0.8);
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      --padding-start: 0;
-      --padding-end: 0;
-    }
-  }
+// --- UI INTERFACE ---
+.hud-interface {
+  position: relative; z-index: 2;
+  padding: 80px 20px 20px;
+  max-width: 500px; margin: 0 auto;
 }
 
-// ... Form card styles ...
+// HEADER
+.hud-header {
+  text-align: center; margin-bottom: 30px;
+  .signal-box {
+    display: flex; justify-content: center; align-items: center; gap: 5px;
+    color: $neon-green; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 5px;
+    .blink { animation: blink 1s infinite; }
+  }
+  h1 { font-family: 'Orbitron'; font-size: 2.5rem; color: white; margin: 0; text-shadow: 0 0 10px $neon-green; }
+  .highlight { color: $neon-green; }
+  .coords { font-family: 'Courier New'; font-size: 0.6rem; color: #666; margin-top: 5px; }
+}
+
+// DRONE VIEWPORT
+.drone-viewport {
+  position: relative; height: 300px;
+  background: rgba(0, 20, 10, 0.6);
+  border: 1px solid rgba($neon-green, 0.2);
+  margin-bottom: 30px; overflow: hidden;
+  display: flex; justify-content: center; align-items: center;
+  backdrop-filter: blur(2px);
+
+  // Corners
+  .corner { position: absolute; width: 30px; height: 30px; border: 2px solid $neon-green; transition: 0.3s; }
+  .tl { top: 0; left: 0; border-right: none; border-bottom: none; }
+  .tr { top: 0; right: 0; border-left: none; border-bottom: none; }
+  .bl { bottom: 0; left: 0; border-right: none; border-top: none; }
+  .br { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+  // Laser Scan
+  .scan-laser {
+    position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+    background: $neon-green; box-shadow: 0 0 20px $neon-green;
+    animation: scan-down 3s linear infinite; z-index: 1; opacity: 0.7;
+  }
+
+  // Target Reticle
+  .target-reticle {
+    position: absolute; top: 50%; left: 50%; width: 50px; height: 50px;
+    border: 1px solid rgba(255,255,255,0.3); transform: translate(-50%, -50%);
+    &::before, &::after { content: ''; position: absolute; background: white; }
+    &::before { top: 50%; left: 0; width: 100%; height: 1px; } // Crosshair H
+    &::after { top: 0; left: 50%; width: 1px; height: 100%; } // Crosshair V
+  }
+
+  // Trigger
+  .camera-trigger {
+    text-align: center; color: white; z-index: 2; cursor: pointer;
+    .hex-btn {
+      width: 80px; height: 80px; margin: 0 auto 15px;
+      background: rgba($neon-green, 0.1); border: 1px solid $neon-green;
+      display: flex; align-items: center; justify-content: center;
+      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+      transition: 0.3s;
+      ion-icon { font-size: 3rem; color: $neon-green; }
+      &:hover { background: $neon-green; ion-icon { color: black; } transform: scale(1.1); box-shadow: 0 0 30px $neon-green; }
+    }
+    p { font-size: 0.8rem; letter-spacing: 1px; opacity: 0.8; }
+  }
+
+  .captured-img { width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+  .retake-btn {
+    position: absolute; bottom: 10px; right: 10px; z-index: 10;
+    background: rgba(0,0,0,0.8); color: white; padding: 5px 10px; font-size: 0.7rem;
+    display: flex; align-items: center; gap: 5px; cursor: pointer; border: 1px solid white;
+  }
+}
+
+// FORMULAIRE
+.tactical-form {
+  .input-row { display: flex; gap: 15px; margin-bottom: 20px; }
+  
+  .tech-input {
+    flex: 1; position: relative;
+    label { font-size: 0.6rem; color: $neon-cyan; letter-spacing: 1px; display: block; margin-bottom: 5px; }
+    input {
+      width: 100%; background: rgba(255,255,255,0.05); border: none; padding: 15px;
+      color: white; font-family: 'Orbitron'; font-size: 1.2rem;
+      border-bottom: 1px solid #333; outline: none; transition: 0.3s;
+    }
+    .bar { height: 1px; width: 0; background: $neon-cyan; transition: 0.3s; }
+    &:focus-within { input { background: rgba($neon-cyan, 0.05); } .bar { width: 100%; } }
+  }
+
+  .scan-btn {
+    width: 100%; padding: 20px; background: $neon-green; border: none;
+    position: relative; overflow: hidden; cursor: pointer;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    
+    .btn-content {
+      position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 10px;
+      color: black; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px;
+      ion-icon { font-size: 1.5rem; }
+    }
+    
+    .scan-progress {
+      position: absolute; top: 0; left: 0; height: 100%; width: 100%;
+      background: rgba(255,255,255,0.5); z-index: 1;
+      animation: progress-fill 2s linear infinite;
+    }
+
+    &:hover { box-shadow: 0 0 30px $neon-green; }
+    &:active { transform: scale(0.98); }
+    &:disabled { background: #333; cursor: not-allowed; .btn-content { color: #666; } }
+  }
+}
+
+// RESULT
+.result-panel {
+  margin-top: 30px; background: rgba(0,0,0,0.8); border: 1px solid white; padding: 20px;
+  animation: slide-up 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  
+  .res-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 1.5rem;
+  }
+  &.NORMAL { border-color: $neon-green; color: $neon-green; box-shadow: 0 0 20px rgba($neon-green, 0.2); }
+  &.ANOMALY { border-color: $neon-red; color: $neon-red; box-shadow: 0 0 20px rgba($neon-red, 0.2); }
+  .res-body { color: white; opacity: 0.8; font-size: 0.9rem; }
+}
+
+// --- ANIMATIONS ---
+@keyframes spin-x { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(180deg); } }
+@keyframes spin-y { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+@keyframes spin-z { from { transform: rotateZ(0deg); } to { transform: rotateZ(360deg); } }
+@keyframes scan-down { 0% { top: -10%; } 100% { top: 110%; } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes progress-fill { from { width: 0; } to { width: 100%; } }
+@keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse-core { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.4; } }

@@ -1,0 +1,92 @@
+/* GLOBAL OVERLAY CONTAINER */
+.singularity-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    z-index: 99999; pointer-events: none; display: none;
+    background: transparent;
+  
+    &.explode { display: block; }
+  
+    // ---------------------------------------------
+    // 1. WHITE GLITCH (Pour HOME & Q.G.) ⚪
+    // Vibe: Clean, Labo, Rupture
+    // ---------------------------------------------
+    &.white-glitch {
+      .white-layer {
+        position: absolute; inset: 0; background: white;
+        animation: white-shred 0.4s cubic-bezier(0.1, 0.9, 0.2, 1) both;
+      }
+      .flash {
+        position: absolute; inset: 0; background: #fff;
+        animation: flash-out 0.6s forwards;
+      }
+    }
+  
+    // ---------------------------------------------
+    // 2. HOLO WARP (Pour SCANNER) 🟢
+    // Vibe: Drone, Distortion, Cyber
+    // ---------------------------------------------
+    &.holo-warp {
+      background: rgba(0, 255, 157, 0.1);
+      backdrop-filter: blur(5px) invert(1);
+      
+      .scan-line {
+        position: absolute; width: 100%; height: 10vh;
+        background: linear-gradient(to bottom, transparent, #00ff9d, transparent);
+        opacity: 0.8;
+        animation: scan-down 0.5s linear forwards;
+      }
+      
+      animation: warp-shake 0.5s both;
+    }
+  
+    // ---------------------------------------------
+    // 3. MATRIX RAIN (Pour LOGS) 🟢💻
+    // Vibe: Decoding, Data Flow, Digital Noise
+    // ---------------------------------------------
+    &.matrix-rain {
+      background: black;
+      
+      // Digital Rain Overlay
+      &::before {
+        content: ''; position: absolute; inset: 0;
+        background: repeating-linear-gradient(0deg, transparent, transparent 2px, #00ff00 2px, #00ff00 4px);
+        background-size: 100% 4px;
+        opacity: 0.3;
+        animation: scan-move 0.2s linear infinite;
+      }
+  
+      .flash {
+        position: absolute; inset: 0; 
+        background: radial-gradient(circle, #00ff00 0%, black 100%);
+        opacity: 0;
+        animation: matrix-flash 0.5s forwards;
+      }
+    }
+  }
+  
+  // --- KEYFRAMES ---
+  
+  // White Glitch
+  @keyframes white-shred {
+    0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); transform: translateX(0); }
+    20% { clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%); transform: translateX(-10px); }
+    40% { clip-path: polygon(0 0, 100% 20%, 100% 100%, 0 80%); transform: translateX(10px); }
+    100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 0; }
+  }
+  @keyframes flash-out { from { opacity: 1; } to { opacity: 0; } }
+  
+  // Holo Scan
+  @keyframes scan-down { 0% { top: -10%; } 100% { top: 110%; } }
+  @keyframes warp-shake {
+    0% { transform: scale(1) skew(0deg); }
+    50% { transform: scale(1.1) skew(5deg); filter: hue-rotate(90deg); }
+    100% { transform: scale(1) skew(0deg); }
+  }
+  
+  // Matrix Rain
+  @keyframes scan-move { from { background-position: 0 0; } to { background-position: 0 100%; } }
+  @keyframes matrix-flash { 
+    0% { opacity: 0; transform: scale(0.9); } 
+    50% { opacity: 1; transform: scale(1.05); } 
+    100% { opacity: 0; transform: scale(1.2); } 
+  }

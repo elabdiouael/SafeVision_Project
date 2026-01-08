@@ -1,0 +1,57 @@
+<ion-content [fullscreen]="true">
+  
+  <div class="world-3d">
+    <div class="cyber-sky">
+      <div class="star s1"></div>
+      <div class="star s2"></div>
+      <div class="star s3"></div>
+      <div class="star s4"></div>
+    </div>
+    
+    <div class="horizon-glow"></div>
+    
+    <div class="cyber-floor"></div>
+  </div>
+
+  <div class="login-container">
+    
+    <div class="header-box">
+      <div class="lock-icon">
+        <ion-icon name="finger-print-outline"></ion-icon>
+      </div>
+      <h1 class="glitch" data-text="SAFEVISION">SAFEVISION</h1>
+      <p>PORTAL SECURITY ACCESS v4.0</p>
+    </div>
+
+    <div class="cyber-form">
+      
+      <div class="input-group">
+        <label>IDENTIFIANT // OD-2</label>
+        <div class="input-wrapper">
+          <ion-icon name="person-circle-outline"></ion-icon>
+          <input type="text" [(ngModel)]="username" placeholder="Entrez ID..." />
+          <div class="line-anim"></div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>CLE DE SECURITE // HASH</label>
+        <div class="input-wrapper">
+          <ion-icon name="key-outline"></ion-icon>
+          <input type="password" [(ngModel)]="password" placeholder="••••••••" />
+          <div class="line-anim"></div>
+        </div>
+      </div>
+
+      <button class="cyber-btn" (click)="login()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">INITIALISER LA SESSION</span>
+        <span *ngIf="isLoading">DÉCRYPTAGE EN COURS...</span>
+        <div class="btn-glitch"></div>
+      </button>
+
+      <p class="footer-code">RESTRICTED AREA // AUTH REQUIRED</p>
+
+    </div>
+  </div>
+
+</ion-content>

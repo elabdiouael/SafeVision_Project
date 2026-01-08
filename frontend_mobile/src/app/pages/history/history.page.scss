@@ -1,113 +1,198 @@
-// Variables
-$bg-light: #f4f5f8;
-$text-dark: #1e1e1e;
-$green: #2dd36f;
-$red: #eb445a;
+// VARIABLES
+$neon-cyan: #00f3ff;
+$neon-red: #ff2a2a;
+$neon-green: #00ff41;
+$bg-deep: #020205;
 
-.history-content {
-  --background: #{$bg-light};
+.history-vault {
+  --background: #{$bg-deep};
+  font-family: 'Rajdhani', sans-serif;
 }
 
-.container {
-  padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
+// --- 🌌 3D DATA STREAM BACKGROUND ---
+.stream-container {
+  position: fixed; inset: 0; z-index: 0;
+  perspective: 1000px; overflow: hidden;
+  background: radial-gradient(circle at center, #0a0a15 0%, #000 100%);
 
-  .header-section {
-    margin-bottom: 25px;
-    h2 { font-weight: 800; color: $text-dark; margin: 0; }
-    p { color: #888; margin-top: 5px; font-size: 0.95rem; }
-  }
-
-  // Loading & Empty States
-  .loading-state, .empty-state {
-    text-align: center;
-    padding: 50px 0;
-    color: #999;
+  .data-column {
+    position: absolute; top: -50%; width: 200px; height: 200%;
+    background-image: linear-gradient(0deg, 
+      transparent 0%, 
+      rgba($neon-cyan, 0.1) 50%, 
+      transparent 100%
+    );
+    background-size: 100% 100px;
+    transform-style: preserve-3d;
     
-    ion-icon { font-size: 3rem; margin-bottom: 10px; opacity: 0.5; }
-    ion-spinner { transform: scale(1.5); margin-bottom: 15px; }
+    &.left {
+      left: 10%;
+      transform: rotateY(60deg) translateZ(-200px);
+      animation: stream-flow 5s linear infinite;
+      border-right: 1px dashed rgba($neon-cyan, 0.2);
+    }
+    
+    &.right {
+      right: 10%;
+      transform: rotateY(-60deg) translateZ(-200px);
+      animation: stream-flow 7s linear infinite reverse;
+      border-left: 1px dashed rgba($neon-cyan, 0.2);
+    }
   }
 
-  // Cards List
-  .audit-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+  .depth-fog {
+    position: absolute; inset: 0;
+    background: radial-gradient(circle, transparent 40%, #020205 90%);
   }
+}
 
-  .audit-card {
-    background: white;
-    border-radius: 12px;
-    padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    border-left: 5px solid #ccc; // Default border
-    transition: transform 0.2s;
+// --- UI INTERFACE ---
+.vault-interface {
+  position: relative; z-index: 2;
+  padding: 90px 20px 20px;
+  max-width: 600px; margin: 0 auto;
+}
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.06);
-    }
-
-    // Styles Spécifiques
-    &.NORMAL {
-      border-left-color: $green;
-      .status-text { color: $green; background: rgba($green, 0.1); }
-    }
-
-    &.ANOMALY {
-      border-left-color: $red;
-      .status-text { color: $red; background: rgba($red, 0.1); }
-    }
-
-    .card-left {
-      display: flex;
-      gap: 15px;
-
-      .info {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-
-        .date { font-size: 0.8rem; color: #999; font-weight: 500; }
-        
-        .metrics {
-          display: flex;
-          gap: 10px;
-          .badge {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #555;
-            background: #f0f0f0;
-            padding: 4px 8px;
-            border-radius: 6px;
-          }
-        }
-      }
-    }
-
-    .card-right {
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      align-items: flex-end;
-
-      .status-text {
-        font-size: 0.75rem;
-        font-weight: 800;
-        padding: 4px 8px;
-        border-radius: 20px;
-        letter-spacing: 0.5px;
-      }
-
-      .risk-score {
-        font-size: 0.7rem;
-        color: #aaa;
-      }
+// HEADER
+.vault-header {
+  display: flex; align-items: center; gap: 20px; margin-bottom: 30px;
+  
+  .icon-hex {
+    width: 50px; height: 50px;
+    background: rgba($neon-cyan, 0.1); border: 1px solid $neon-cyan;
+    display: flex; align-items: center; justify-content: center;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    ion-icon { font-size: 1.5rem; color: $neon-cyan; }
+    animation: pulse-hex 3s infinite;
+  }
+  
+  .header-text {
+    h1 { font-family: 'Orbitron'; font-size: 2rem; color: white; margin: 0; text-shadow: 0 0 10px rgba($neon-cyan, 0.5); }
+    .sync-status {
+      font-size: 0.7rem; color: #888; letter-spacing: 2px; margin-top: 5px; display: flex; align-items: center; gap: 8px;
+      .dot { width: 6px; height: 6px; background: $neon-green; border-radius: 50%; animation: blink 1s infinite; }
     }
   }
 }
+
+// SEARCH BAR
+.search-bar {
+  position: relative; margin-bottom: 30px;
+  background: rgba(255,255,255,0.05); border-radius: 4px;
+  display: flex; align-items: center; padding: 0 15px; height: 45px;
+  border: 1px solid rgba(255,255,255,0.1);
+  
+  ion-icon { color: #666; margin-right: 10px; }
+  input { background: transparent; border: none; color: white; width: 100%; font-family: 'Orbitron'; font-size: 0.9rem; outline: none; }
+  .scan-line { position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, $neon-cyan, transparent); animation: scan-x 2s infinite; }
+}
+
+// --- CARD GRID ---
+.logs-grid {
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+// 🃏 THE LOG CARD
+.log-card {
+  background: rgba(10, 20, 30, 0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  position: relative; overflow: hidden;
+  padding: 20px;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slide-in 0.5s both;
+  
+  // Status Indicator Line
+  .status-marker {
+    position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+    background: #444; transition: 0.3s;
+  }
+
+  // --- TOP INFO ---
+  .card-top {
+    display: flex; justify-content: space-between; margin-bottom: 20px;
+    font-family: 'Orbitron'; font-size: 0.8rem; letter-spacing: 1px;
+    .log-id { color: white; opacity: 0.8; }
+    .log-date { color: #666; font-size: 0.7rem; }
+  }
+
+  // --- MID METRICS ---
+  .card-mid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;
+    
+    .metric {
+      display: flex; align-items: center; gap: 10px;
+      ion-icon { font-size: 1.5rem; color: #555; }
+      .val-box {
+        display: flex; flex-direction: column;
+        span { font-size: 1.1rem; font-weight: bold; color: white; font-family: 'Orbitron'; }
+        label { font-size: 0.6rem; color: #666; letter-spacing: 1px; }
+      }
+      &.risk .val-box span { color: white; } // Default
+    }
+  }
+
+  // --- ACTIONS ---
+  .card-actions {
+    display: flex; gap: 10px;
+    height: 0; opacity: 0; overflow: hidden; transition: 0.3s;
+    
+    .action-btn {
+      flex: 1; padding: 10px; border: 1px solid rgba(255,255,255,0.2); background: transparent;
+      color: white; font-family: 'Rajdhani'; font-weight: bold; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: 0.8rem; transition: 0.2s;
+      
+      &:hover { background: rgba(255,255,255,0.1); }
+      &.view:hover { border-color: $neon-cyan; color: $neon-cyan; }
+      &.dl:hover { border-color: $neon-red; color: $neon-red; }
+    }
+  }
+
+  // --- STATUS TAG ---
+  .status-tag {
+    position: absolute; top: 0; right: 0;
+    font-size: 0.6rem; padding: 4px 10px;
+    background: #333; color: #888; font-weight: bold;
+    border-bottom-left-radius: 8px;
+  }
+
+  // --- HOVER & ACTIVE STATES ---
+  &:hover {
+    transform: translateY(-5px) scale(1.01);
+    background: rgba(30, 40, 50, 0.8);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    .card-actions { height: 40px; opacity: 1; margin-top: 10px; } // Reveal buttons
+  }
+
+  // STATUS COLORS (Normal vs Anomaly)
+  &.NORMAL {
+    .status-marker { background: $neon-green; box-shadow: 0 0 10px $neon-green; }
+    .status-tag { background: rgba($neon-green, 0.2); color: $neon-green; }
+    .card-mid .metric ion-icon { color: $neon-green; }
+    &:hover { border-color: $neon-green; }
+  }
+
+  &.ANOMALY {
+    .status-marker { background: $neon-red; box-shadow: 0 0 10px $neon-red; }
+    .status-tag { background: rgba($neon-red, 0.2); color: $neon-red; }
+    .card-mid .metric.risk ion-icon { color: $neon-red; }
+    .card-mid .metric.risk span { color: $neon-red; }
+    &:hover { border-color: $neon-red; }
+    background: linear-gradient(45deg, rgba($neon-red, 0.05), transparent);
+  }
+}
+
+// SKELETON LOADING
+.skeleton {
+  height: 150px; background: rgba(255,255,255,0.02);
+  animation: pulse-bg 1.5s infinite;
+}
+
+// --- ANIMATIONS ---
+@keyframes stream-flow { from { background-position: 0 0; } to { background-position: 0 1000px; } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes pulse-hex { 0%, 100% { box-shadow: 0 0 5px $neon-cyan; } 50% { box-shadow: 0 0 15px $neon-cyan; } }
+@keyframes scan-x { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes slide-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse-bg { 0% { opacity: 0.5; } 50% { opacity: 0.8; } 100% { opacity: 0.5; } }

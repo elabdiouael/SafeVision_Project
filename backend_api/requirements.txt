@@ -4,3 +4,11 @@ pandas
 scikit-learn
 joblib
 python-multipart
+fpdf
+Pillow
+easyocr
+opencv-python-headless
+numpy
+# ZID HADOU BJOUJ 👇
+python-jose[cryptography]
+passlib[bcrypt]

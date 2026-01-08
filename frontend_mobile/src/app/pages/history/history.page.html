@@ -1,71 +1,97 @@
-<ion-header [translucent]="true">
-  <ion-toolbar color="primary">
-    <ion-title>Journal d'Audit</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="refreshHistory()">
-        <ion-icon name="refresh-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-navbar></app-navbar>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true" class="history-vault">
   
-  <div *ngIf="loading" class="loading-container">
-    <ion-spinner name="crescent"></ion-spinner>
-    <p>Chargement des données...</p>
+  <div class="stream-container">
+    <div class="data-column left"></div>
+    <div class="data-column right"></div>
+    <div class="depth-fog"></div>
   </div>
 
-  <div *ngIf="!loading && history.length === 0" class="empty-state">
-    <ion-icon name="folder-open-outline"></ion-icon>
-    <p>Aucune intervention enregistrée.</p>
-  </div>
-
-  <ion-list *ngIf="!loading && history.length > 0">
-    <ion-item-group>
-      <ion-item-divider sticky>
-        <ion-label>Historique Récent</ion-label>
-      </ion-item-divider>
-
-      <ion-item *ngFor="let item of history" lines="full">
-        <ion-label>
-          <h2>Date: {{ item.Date }}</h2>
-          <p>
-            📏 Câble: <strong>{{ item.Cable_m }}m</strong> | 
-            ⏱️ Temps: <strong>{{ item.Temps_h }}h</strong>
-          </p>
-          <p>
-            Risk Score: 
-            <span [class.danger]="item.Risk_Score > 0.5" [class.safe]="item.Risk_Score <= 0.5">
-              {{ item.Risk_Score }}
-            </span>
-          </p>
-        </ion-label>
-
-        <ion-badge slot="end" [color]="item.Status === 'NORMAL' ? 'success' : 'danger'">
-          {{ item.Status }}
-        </ion-badge>
-
-        <div slot="end" class="actions-wrapper">
-          
-          <ion-button 
-            fill="clear" 
-            color="secondary"
-            *ngIf="item.Image_ID && item.Image_ID !== 'N/A'"
-            (click)="openImage(item.Image_ID)">
-            <ion-icon name="image-outline" slot="icon-only"></ion-icon>
-          </ion-button>
-
-          <ion-button 
-            fill="clear" 
-            color="danger"
-            *ngIf="item.Image_ID && item.Image_ID !== 'N/A'"
-            (click)="downloadPDF(item.Image_ID)">
-            <ion-icon name="document-text-outline" slot="icon-only"></ion-icon>
-          </ion-button>
-
+  <div class="vault-interface">
+    
+    <div class="vault-header">
+      <div class="icon-hex">
+        <ion-icon name="server-outline"></ion-icon>
+      </div>
+      <div class="header-text">
+        <h1 class="glitch" data-text="AUDIT LOGS">AUDIT LOGS</h1>
+        <div class="sync-status">
+          <span class="dot"></span> 
+          DATABASE SYNCHRONIZED // SECTOR 7
         </div>
-        </ion-item>
-    </ion-item-group>
-  </ion-list>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <ion-icon name="search-outline"></ion-icon>
+      <input type="text" placeholder="SEARCH HASH / ID..." disabled>
+      <div class="scan-line"></div>
+    </div>
+
+    <div *ngIf="!loading && history.length === 0" class="empty-state">
+      <ion-icon name="folder-open-outline"></ion-icon>
+      <p>ARCHIVE EMPTY</p>
+    </div>
+
+    <div class="logs-grid" *ngIf="!loading && history.length > 0">
+      
+      <div class="log-card" *ngFor="let item of history; let i = index" 
+           [ngClass]="item.Status" 
+           [style.animation-delay]="i * 0.1 + 's'">
+        
+        <div class="status-marker"></div>
+        
+        <div class="card-top">
+          <span class="log-id">HASH: {{ item.Image_ID?.substring(0, 8) || 'UNK' }}...</span>
+          <span class="log-date">{{ item.Date }}</span>
+        </div>
+
+        <div class="card-mid">
+          <div class="metric">
+             <ion-icon name="resize-outline"></ion-icon>
+             <div class="val-box">
+               <span>{{ item.Cable_m }}M</span>
+               <label>LENGTH</label>
+             </div>
+          </div>
+          <div class="metric">
+             <ion-icon name="time-outline"></ion-icon>
+             <div class="val-box">
+               <span>{{ item.Temps_h }}H</span>
+               <label>TIME</label>
+             </div>
+          </div>
+          <div class="metric risk">
+             <ion-icon name="alert-circle-outline" *ngIf="item.Risk_Score > 0.5"></ion-icon>
+             <ion-icon name="shield-checkmark-outline" *ngIf="item.Risk_Score <= 0.5"></ion-icon>
+             <div class="val-box">
+               <span>{{ item.Risk_Score }}</span>
+               <label>RISK</label>
+             </div>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button class="action-btn view" (click)="openImage(item.Image_ID)" *ngIf="item.Image_ID && item.Image_ID !== 'N/A'">
+            VIEW EVIDENCE
+            <ion-icon name="eye-outline"></ion-icon>
+          </button>
+          <button class="action-btn dl" (click)="downloadPDF(item.Image_ID)" *ngIf="item.Image_ID && item.Image_ID !== 'N/A'">
+            PDF REPORT
+            <ion-icon name="download-outline"></ion-icon>
+          </button>
+        </div>
+
+        <div class="status-tag">{{ item.Status === 'NORMAL' ? 'SECURE' : 'BREACH' }}</div>
+
+      </div>
+
+    </div>
+
+    <div class="logs-grid" *ngIf="loading">
+       <div class="log-card skeleton" *ngFor="let i of [1,2,3]"></div>
+    </div>
+
+  </div>
 </ion-content>

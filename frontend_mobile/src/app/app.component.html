@@ -1,3 +1,11 @@
 <ion-app>
+  <div class="singularity-overlay" [class.explode]="isExploding" [ngClass]="effectType">
+    
+    <div class="white-layer"></div>
+    <div class="scan-line"></div>
+    <div class="flash"></div>
+
+  </div>
+
   <ion-router-outlet></ion-router-outlet>
 </ion-app>

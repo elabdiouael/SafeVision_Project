@@ -1,0 +1,72 @@
+<app-navbar></app-navbar>
+
+<ion-content [fullscreen]="true" class="command-center">
+  
+  <div class="cyber-grid"></div>
+
+  <div class="dashboard-container">
+    
+    <div class="hud-header">
+      <div>
+        <h1 class="neon-title">SYSTEM <span class="blink">OVERSEER</span></h1>
+        <p class="subtitle">STATUS: ONLINE // ENCRYPTED CONNECTION</p>
+      </div>
+      <div class="live-badge">
+        <div class="pulse-dot"></div> LIVE FEED
+      </div>
+    </div>
+
+    <div class="stats-matrix">
+      
+      <div class="holo-card blue">
+        <div class="card-icon"><ion-icon name="layers-outline"></ion-icon></div>
+        <div class="card-data">
+          <span class="label">TOTAL SCANS</span>
+          <span class="value">{{ stats.total_interventions }}</span>
+        </div>
+        <div class="corner-deco"></div>
+      </div>
+
+      <div class="holo-card red">
+        <div class="card-icon"><ion-icon name="alert-circle-outline"></ion-icon></div>
+        <div class="card-data">
+          <span class="label">THREATS</span>
+          <span class="value">{{ stats.anomalies_count }}</span>
+        </div>
+        <div class="corner-deco"></div>
+      </div>
+
+      <div class="holo-card green">
+        <div class="card-icon"><ion-icon name="shield-checkmark-outline"></ion-icon></div>
+        <div class="card-data">
+          <span class="label">INTEGRITY</span>
+          <span class="value">{{ stats.success_rate }}%</span>
+        </div>
+        <div class="corner-deco"></div>
+      </div>
+
+      <div class="holo-card purple">
+        <div class="card-icon"><ion-icon name="resize-outline"></ion-icon></div>
+        <div class="card-data">
+          <span class="label">COVERAGE (KM)</span>
+          <span class="value">{{ stats.total_cable_km }}</span>
+        </div>
+        <div class="corner-deco"></div>
+      </div>
+
+    </div>
+
+    <div class="main-visualizer">
+      <div class="vis-header">
+        <h3><ion-icon name="pie-chart-outline"></ion-icon> RISK DISTRIBUTION</h3>
+        <div class="deco-line"></div>
+      </div>
+      
+      <div class="chart-wrapper">
+        <canvas id="riskChart"></canvas>
+        <div class="holo-base"></div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

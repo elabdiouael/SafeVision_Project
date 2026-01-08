@@ -1,0 +1,9 @@
+#canvas-container {
+    position: absolute;
+    top: 0; left: 0; 
+    width: 100%; height: 100%;
+    // 👇 FIX: Z-index 0 (machi -1) bach ykoun niveau normal
+    z-index: 0; 
+    overflow: hidden;
+    background: #020205; // Fallback color
+  }

@@ -1,0 +1,166 @@
+// VARIABLES
+$neon-blue: #00f3ff;
+$bg-dark: #050510;
+
+// Content Reset
+ion-content {
+  --background: #{$bg-dark};
+}
+
+// --- 🌍 3D WORLD CONTAINER ---
+.world-3d {
+  position: absolute; inset: 0;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #000 0%, #0a0a20 100%);
+  perspective: 1000px; // L-3om9 (Depth)
+  z-index: 0;
+}
+
+// 1. SKY & STARS (Sma)
+.cyber-sky {
+  position: absolute; top: 0; left: 0; width: 100%; height: 60%;
+  background: linear-gradient(to bottom, #000, #0a1a2f);
+  z-index: 1;
+  
+  .star {
+    position: absolute; background: white; border-radius: 50%;
+    animation: twinkle 3s infinite alternate;
+  }
+  .s1 { top: 20%; left: 30%; width: 2px; height: 2px; animation-delay: 0s; }
+  .s2 { top: 40%; left: 70%; width: 3px; height: 3px; animation-delay: 1s; box-shadow: 0 0 5px white; }
+  .s3 { top: 15%; left: 80%; width: 2px; height: 2px; animation-delay: 2s; }
+  .s4 { top: 10%; left: 10%; width: 2px; height: 2px; animation-delay: 0.5s; }
+}
+
+// 2. HORIZON GLOW (L-Khet l-modi2 l-b3id)
+.horizon-glow {
+  position: absolute; top: 50%; left: 0; width: 100%; height: 2px;
+  background: $neon-blue;
+  box-shadow: 0 0 60px 20px rgba($neon-blue, 0.4);
+  z-index: 3;
+}
+
+// 3. 3D FLOOR GRID (L-Ardiyya)
+.cyber-floor {
+  position: absolute; 
+  bottom: 0; left: -50%; // Wsse3naha bach tghatti jenb
+  width: 200%; height: 50%;
+  
+  // Grid Pattern (Caroyat)
+  background-image: 
+    linear-gradient($neon-blue 1px, transparent 1px), 
+    linear-gradient(90deg, $neon-blue 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0;
+  
+  // 3D Transform
+  transform-origin: 50% 0%;
+  transform: rotateX(60deg); // Tmil
+  
+  // Animation (Infinite Flight)
+  animation: fly-grid 2s linear infinite;
+  
+  // Mask (Fade to black f l-o9of)
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 30%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 30%);
+  z-index: 2;
+}
+
+// --- LOGIN UI (Container Fo9 l-3D) ---
+.login-container {
+  position: relative; z-index: 10;
+  height: 100vh; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; padding: 20px;
+}
+
+// HEADER
+.header-box {
+  text-align: center; margin-bottom: 50px;
+  
+  .lock-icon {
+    font-size: 4rem; color: $neon-blue; margin-bottom: 10px;
+    animation: float 3s ease-in-out infinite;
+    ion-icon { filter: drop-shadow(0 0 10px $neon-blue); }
+  }
+  
+  h1 {
+    font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: white; margin: 0;
+    letter-spacing: 2px; text-shadow: 0 0 20px $neon-blue;
+    position: relative;
+    &:hover { animation: glitch-anim-1 0.3s infinite; }
+  }
+  
+  p { font-family: 'Rajdhani', sans-serif; color: #888; letter-spacing: 4px; font-size: 0.8rem; margin-top: 5px; text-transform: uppercase; }
+}
+
+// FORMULAIRE
+.cyber-form {
+  width: 100%; max-width: 350px;
+  
+  .input-group {
+    margin-bottom: 25px;
+    
+    label { font-family: 'Rajdhani'; font-weight: 700; color: $neon-blue; font-size: 0.7rem; letter-spacing: 1px; display: block; margin-bottom: 8px; }
+    
+    .input-wrapper {
+      position: relative; display: flex; align-items: center;
+      background: rgba(0, 20, 40, 0.7); // Semi-transparent Dark Blue
+      border: 1px solid rgba($neon-blue, 0.3);
+      padding: 0 15px; height: 50px;
+      backdrop-filter: blur(5px);
+      transition: 0.3s;
+      
+      ion-icon { color: #888; margin-right: 10px; font-size: 1.2rem; }
+      
+      input { 
+        background: transparent; border: none; color: white; width: 100%; height: 100%;
+        font-family: 'Orbitron'; letter-spacing: 1px; outline: none; 
+        &::placeholder { color: #555; font-family: 'Rajdhani'; } 
+      }
+      
+      .line-anim { position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; background: $neon-blue; transition: 0.3s ease-out; box-shadow: 0 0 10px $neon-blue; }
+      
+      &:focus-within { 
+        border-color: $neon-blue; 
+        background: rgba($neon-blue, 0.1);
+        ion-icon { color: $neon-blue; } 
+        .line-anim { width: 100%; } 
+      }
+    }
+  }
+
+  // BOUTON
+  .cyber-btn {
+    width: 100%; height: 55px; margin-top: 20px;
+    background: $neon-blue; border: none; cursor: pointer; position: relative; overflow: hidden;
+    clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+    transition: 0.2s;
+    
+    span { position: relative; z-index: 2; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 2px; color: black; font-size: 1rem; }
+    
+    .btn-glitch { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.8), transparent); transform: translateX(-100%); transition: 0.5s; }
+    
+    &:hover { background: white; span { color: $neon-blue; } box-shadow: 0 0 30px $neon-blue; .btn-glitch { transform: translateX(100%); } }
+    &:active { transform: scale(0.98); }
+    &:disabled { background: #333; cursor: not-allowed; span { color: #666; } }
+  }
+
+  .footer-code { text-align: center; color: #444; font-family: 'Courier New'; font-size: 0.6rem; margin-top: 30px; letter-spacing: 1px; opacity: 0.7; }
+}
+
+// --- ANIMATIONS ---
+@keyframes fly-grid {
+  0% { transform: rotateX(60deg) translateY(0); }
+  100% { transform: rotateX(60deg) translateY(40px); } // 40px = taille background-size (loop parfait)
+}
+
+@keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes glitch-anim-1 {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}

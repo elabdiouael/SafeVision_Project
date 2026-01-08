@@ -1,34 +1,94 @@
-<app-navbar></app-navbar>
+<app-navbar style="position: fixed; top: 0; left: 0; width: 100%; z-index: 10000;"></app-navbar>
 
-<ion-content [fullscreen]="true">
-  <div class="hero-section">
-    <div class="content-box">
-      <h1>Bienvenue Risk Manager</h1>
-      <p>Tableau de bord de surveillance en temps réel.</p>
+<ion-content [fullscreen]="true" [scrollEvents]="true" (ionScroll)="onScroll($event)">
+  
+  <div class="tunnel-bg">
+    <div class="tunnel-grid"></div>
+    <div class="fog-overlay"></div>
+  </div>
+
+  <div class="singularity-overlay white-glitch" [class.explode]="triggerExplosion">
+    <div class="white-layer"></div>
+    <div class="flash"></div>
+  </div>
+
+  <div class="tall-container" [style.height]="totalHeight + 'px'">
+    <div class="sticky-viewport">
       
-      <div class="stats-grid">
-        
-        <div class="stat-card">
-          <span class="number">{{ anomaliesCount }}</span>
-          <span class="label">Anomalies</span>
-        </div>
+      <div class="horizontal-track" [style.transform]="'translateX(' + translateX + 'px)'">
 
-        <div class="stat-card success">
-          <span class="number">{{ validatedCount }}</span>
-          <span class="label">Validées</span>
-        </div>
+        <section class="page page-one">
+          
+          <div class="holo-container">
+            <div class="emitter-beam"></div> <div class="holo-content">
+              <div class="sys-badge">SYSTEM: <span class="ok">ONLINE</span></div>
+              <h1 class="mega-title" data-text="SAFEVISION">SAFEVISION</h1>
+              <p class="tagline">QUANTUM THREAT DETECTION</p>
+              
+              <div class="stats-row">
+                <div class="stat">
+                  <span class="val">99.9%</span>
+                  <span class="lbl">UPTIME</span>
+                </div>
+                <div class="separator"></div>
+                <div class="stat">
+                  <span class="val">v4.0</span>
+                  <span class="lbl">VERSION</span>
+                </div>
+              </div>
+            </div>
 
-        <div class="stat-card total">
-          <span class="number">{{ totalInterventions }}</span>
-          <span class="label">Total</span>
-        </div>
+            <div class="scroll-indicator">
+              <span>INITIATE SEQUENCE</span>
+              <div class="arrow-anim"></div>
+            </div>
+          </div>
+
+        </section>
+
+        <section class="page page-two">
+          
+          <div class="warning-tape top">
+            <span>// CRITICAL ERROR // BREACH DETECTED // SYSTEM FAILURE //</span>
+            <span>// CRITICAL ERROR // BREACH DETECTED // SYSTEM FAILURE //</span>
+          </div>
+          
+          <div class="void-container">
+            <div class="danger-box">
+              <div class="icon-pulse">
+                <ion-icon name="nuclear-outline"></ion-icon>
+              </div>
+              <h2>THREAT DETECTED</h2>
+              <div class="loading-bar">
+                <div class="fill"></div>
+              </div>
+              <p>SECTOR 7 IS COMPROMISED</p>
+            </div>
+
+            <div class="cards-grid">
+              <div class="cyber-card anomaly">
+                <ion-icon name="bug-outline"></ion-icon>
+                <span>ANOMALY</span>
+              </div>
+              <div class="cyber-card breach">
+                <ion-icon name="skull-outline"></ion-icon>
+                <span>BREACH</span>
+              </div>
+              <div class="cyber-card fail">
+                <ion-icon name="ban-outline"></ion-icon>
+                <span>FAILURE</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="warning-tape bottom">
+            <span>// DO NOT PROCEED // AUTHORIZED PERSONNEL ONLY //</span>
+            <span>// DO NOT PROCEED // AUTHORIZED PERSONNEL ONLY //</span>
+          </div>
+
+        </section>
 
       </div>
-
-      <ion-button routerLink="/scan" size="large" expand="block" class="cta-btn">
-        Nouvelle Intervention
-        <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
-      </ion-button>
     </div>
   </div>
 </ion-content>

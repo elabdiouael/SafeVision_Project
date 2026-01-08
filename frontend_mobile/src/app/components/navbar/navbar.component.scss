@@ -1,75 +1,154 @@
-// Variables
-$primary: #3880ff;
-$dark: #1e1e1e;
-$text: #ffffff;
+// Variables (Nfs li f global)
+$neon-blue: #00f3ff;
+$neon-pink: #ff00ff;
+$bg-dark: #050505;
+$glass: rgba(10, 20, 30, 0.7);
 
-.my-navbar {
+:host {
+  display: block;
+  position: fixed; // Fixe lfou9
+  top: 0; left: 0; width: 100%;
+  z-index: 1000;
+}
+
+.legend-navbar {
+  height: 70px;
+  background: $glass;
+  backdrop-filter: blur(15px); // Zaj mdeddeb
+  border-bottom: 1px solid rgba($neon-blue, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
-  height: 60px;
-  background-color: $dark;
-  color: $text;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  padding: 0 30px;
   position: relative;
-  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 
-  .logo {
-    font-size: 1.4rem;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    .safe { color: $text; }
-    .vision { color: $primary; }
+  // --- 1. LASER LINE ---
+  .laser-line {
+    position: absolute; bottom: 0; left: 0; height: 1px; width: 100%;
+    background: linear-gradient(90deg, transparent, $neon-blue, transparent);
+    animation: laser-scan 3s infinite ease-in-out;
+    opacity: 0.8;
   }
 
-  .nav-links {
-    display: flex;
-    list-style: none;
-    gap: 25px;
-    margin: 0;
-    padding: 0;
+  // --- 2. LOGO GLITCH ---
+  .logo-container {
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: flex-start;
 
-    li a {
-      text-decoration: none;
-      color: rgba(255, 255, 255, 0.6);
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: color 0.3s ease;
-      padding-bottom: 5px;
+    .cyber-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      font-size: 1.5rem;
+      color: white;
+      letter-spacing: 2px;
+      position: relative;
+      transition: 0.3s;
 
       &:hover {
-        color: $primary;
+        text-shadow: 2px 0 $neon-blue, -2px 0 $neon-pink;
+        animation: logo-shake 0.3s infinite;
       }
+    }
 
-      &.active {
-        color: $primary;
-        border-bottom: 2px solid $primary;
+    .status-indicator {
+      font-size: 0.6rem; color: $neon-blue; letter-spacing: 1px;
+      display: flex; align-items: center; gap: 5px; opacity: 0.7;
+      
+      .dot {
+        width: 6px; height: 6px; background: $neon-blue; border-radius: 50%;
+        box-shadow: 0 0 5px $neon-blue;
+        animation: blink 2s infinite;
       }
     }
   }
 
-  .user-profile {
-    .avatar {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, $primary, darken($primary, 20%));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  // --- 3. LINKS ---
+  .nav-links {
+    display: flex; gap: 40px; list-style: none; margin: 0; padding: 0;
+
+    li {
+      .cyber-link {
+        text-decoration: none; color: rgba(255,255,255,0.6);
+        display: flex; align-items: center; gap: 8px;
+        font-family: 'Rajdhani', sans-serif; font-weight: 700;
+        font-size: 1rem; transition: 0.3s;
+        padding: 5px 10px;
+        position: relative;
+        cursor: pointer;
+
+        ion-icon { font-size: 1.2rem; transition: 0.3s; }
+
+        // Hover Effect
+        &:hover {
+          color: $neon-blue;
+          text-shadow: 0 0 10px rgba($neon-blue, 0.5);
+          ion-icon { transform: scale(1.2); color: white; }
+        }
+
+        // Active State (Route actuelle)
+        &.active {
+          color: white;
+          background: rgba($neon-blue, 0.1);
+          border: 1px solid rgba($neon-blue, 0.3);
+          box-shadow: 0 0 15px rgba($neon-blue, 0.2);
+          
+          &::after { // Petite barre active
+            content: ''; position: absolute; bottom: -21px; left: 0; width: 100%; height: 2px;
+            background: $neon-blue; box-shadow: 0 0 10px $neon-blue;
+          }
+        }
+
+        &.admin:hover { color: $neon-pink; text-shadow: 0 0 10px $neon-pink; }
+      }
+    }
+  }
+
+  // --- 4. PROFILE / LOGOUT ---
+  .profile-section {
+    display: flex; align-items: center; gap: 15px; cursor: pointer;
+    transition: 0.3s;
+
+    .user-info {
+      text-align: right;
+      .role { display: block; font-size: 0.6rem; color: $neon-blue; letter-spacing: 1px; }
+      .name { display: block; font-size: 0.8rem; font-weight: 700; color: white; }
+    }
+
+    .avatar-hex {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, #1a1a1a, #000);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); // Hexagon
+      transition: 0.3s;
+
+      ion-icon { color: $neon-pink; font-size: 1.2rem; }
+    }
+
+    &:hover {
+      .avatar-hex { background: $neon-pink; ion-icon { color: white; } box-shadow: 0 0 15px $neon-pink; }
+      .name { color: $neon-pink; }
     }
   }
 }
 
-// Mobile Responsive (Hide links on small screens)
+// --- ANIMATIONS ---
+@keyframes laser-scan {
+  0% { transform: translateX(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes logo-shake {
+  0% { transform: translate(0); }
+  25% { transform: translate(-1px, 1px); }
+  50% { transform: translate(1px, -1px); }
+  75% { transform: translate(-1px, -1px); }
+  100% { transform: translate(0); }
+}
+
+// Mobile Responsive (Hide Links)
 @media (max-width: 768px) {
-  .nav-links {
-    display: none; 
-    // Hna n9dro nzidou burger menu mn b3d
-  }
+  .nav-links { display: none !important; } // Hna n9dro nziido Burger Menu mn b3d
 }

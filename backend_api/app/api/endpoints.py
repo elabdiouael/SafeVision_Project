@@ -1,12 +1,15 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile
-from fastapi.responses import FileResponse # <-- Import Jdid
-from fpdf import FPDF # <-- Import Jdid
+from fastapi import APIRouter, HTTPException, File, UploadFile, Depends, status
+from fastapi.responses import FileResponse
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fpdf import FPDF
 import joblib
 import os
 import csv
 import uuid
 from datetime import datetime
 from app.schemas.intervention import InterventionCreate, PredictionResult
+from app.core.security import create_access_token, verify_password, get_password_hash, SECRET_KEY, ALGORITHM
+from jose import JWTError, jwt
 from PIL import Image
 import io
 import re
@@ -15,6 +18,27 @@ import numpy as np
 import cv2 
 
 router = APIRouter()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
+
+# --- 0. FAKE DATABASE (AUTHENTIFICATION) ---
+# Mot de passe pour les deux est "123456"
+# Hash: $2b$12$UVmCj2OLZowuQXxk.CXKoud0sI9JXywbsYAGUVUYo1FnNMGNlf8NW
+FAKE_USERS_DB = {
+    "admin": {
+        "username": "admin",
+        "full_name": "Chef de Projet",
+        "role": "admin",
+        "hashed_password": "$2b$12$UVmCj2OLZowuQXxk.CXKoud0sI9JXywbsYAGUVUYo1FnNMGNlf8NW", 
+        "disabled": False,
+    },
+    "tech": {
+        "username": "tech",
+        "full_name": "Technicien Fibre",
+        "role": "tech",
+        "hashed_password": "$2b$12$UVmCj2OLZowuQXxk.CXKoud0sI9JXywbsYAGUVUYo1FnNMGNlf8NW",
+        "disabled": False,
+    }
+}
 
 # --- 1. CONFIGURATION PATHS ---
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -32,12 +56,53 @@ try:
     print(f"✅ API: Risk Model chargé")
 except:
     model = None
+    print(f"⚠️ API: Risk Model MAL9INAHCH")
 
 print("⏳ Initialisation EasyOCR...")
 reader = easyocr.Reader(['en', 'fr']) 
 print("✅ EasyOCR Wajed!")
 
-# --- 3. CLASS PDF GENERATOR (NEW) 📄 ---
+# --- 3. SECURITY HELPERS ---
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Credentials invalid",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    
+    user = FAKE_USERS_DB.get(username)
+    if user is None:
+        raise credentials_exception
+    return user
+
+# --- 4. LOGIN ENDPOINT ---
+@router.post("/login")
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = FAKE_USERS_DB.get(form_data.username)
+    if not user or not verify_password(form_data.password, user["hashed_password"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    access_token = create_access_token(data={"sub": user["username"]})
+    
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer",
+        "role": user["role"],
+        "username": user["username"]
+    }
+
+# --- 5. CLASS PDF GENERATOR ---
 class PDFReport(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 15)
@@ -49,8 +114,7 @@ class PDFReport(FPDF):
         self.set_font('Arial', 'I', 8)
         self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
 
-# --- 4. HELPERS ---
-
+# --- 6. HELPERS ---
 def save_to_history(data, status, score):
     try:
         file_exists = os.path.isfile(HISTORY_PATH)
@@ -137,11 +201,10 @@ def extract_data_from_list(text_list):
 
     return data, full_text
 
-# --- 5. ENDPOINTS ---
+# --- 7. CORE ENDPOINTS ---
 
 @router.get("/report/{image_id}")
 def generate_report(image_id: str):
-    # 1. Chercher info dans CSV
     target_row = None
     if os.path.exists(HISTORY_PATH):
         with open(HISTORY_PATH, mode='r', encoding='utf-8') as f:
@@ -154,7 +217,6 @@ def generate_report(image_id: str):
     if not target_row:
         raise HTTPException(status_code=404, detail="ID introuvable")
 
-    # 2. Création PDF
     pdf = PDFReport()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
@@ -169,18 +231,16 @@ def generate_report(image_id: str):
     pdf.set_font("Arial", '', 12)
     pdf.cell(0, 10, target_row["Date"], 0, 1)
 
-    # Statut Coloré
     pdf.set_font("Arial", 'B', 12)
     pdf.cell(40, 10, "Statut:", 0, 0)
     status = target_row["Status"]
-    if status == "NORMAL": pdf.set_text_color(0, 128, 0) # Vert
-    else: pdf.set_text_color(255, 0, 0) # Rouge
+    if status == "NORMAL": pdf.set_text_color(0, 128, 0) 
+    else: pdf.set_text_color(255, 0, 0) 
     
     pdf.cell(0, 10, status, 0, 1)
-    pdf.set_text_color(0, 0, 0) # Reset Noir
+    pdf.set_text_color(0, 0, 0) 
     pdf.ln(5)
 
-    # Données Techniques
     pdf.set_font("Arial", 'B', 14)
     pdf.cell(0, 10, "Détails Techniques", 0, 1)
     pdf.set_font("Arial", '', 12)
@@ -191,7 +251,6 @@ def generate_report(image_id: str):
     pdf.cell(0, 10, f"{target_row['Temps_h']} h", 1, 1)
     pdf.ln(10)
 
-    # Preuve Image
     image_path = os.path.join(UPLOAD_DIR, image_id)
     if os.path.exists(image_path):
         pdf.set_font("Arial", 'B', 14)
@@ -201,7 +260,6 @@ def generate_report(image_id: str):
             pdf.image(image_path, x=10, w=100)
         except: pass
     
-    # Output
     report_filename = f"Rapport_{image_id}.pdf"
     report_path = os.path.join(UPLOAD_DIR, report_filename)
     pdf.output(report_path)
@@ -209,8 +267,8 @@ def generate_report(image_id: str):
     return FileResponse(report_path, media_type='application/pdf', filename=report_filename)
 
 @router.post("/predict", response_model=PredictionResult)
-def predict_intervention(data: InterventionCreate):
-    # Business Rules
+def predict_intervention(data: InterventionCreate, current_user: dict = Depends(get_current_user)):
+    # 🔒 PROTECTED
     if data.temps_heures and data.temps_heures > 0:
         speed = data.cable_metres / data.temps_heures
         if speed < 10: 
@@ -236,7 +294,8 @@ def predict_intervention(data: InterventionCreate):
     return {"status": status, "risk_score": score, "message": msg}
 
 @router.get("/history")
-def get_history():
+def get_history(current_user: dict = Depends(get_current_user)):
+    # 🔒 PROTECTED
     if not os.path.exists(HISTORY_PATH): return []
     try:
         with open(HISTORY_PATH, mode='r', encoding='utf-8') as f:
@@ -244,7 +303,8 @@ def get_history():
     except: return []
 
 @router.post("/ocr")
-async def analyze_image(file: UploadFile = File(...)):
+async def analyze_image(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    # 🔒 PROTECTED
     try:
         file_ext = file.filename.split('.')[-1]
         unique_id = f"scan_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8]}"
@@ -269,3 +329,35 @@ async def analyze_image(file: UploadFile = File(...)):
     except Exception as e:
         print(f"❌ Error: {e}")
         return {"status": "error", "message": str(e)}
+
+# --- NEW: STATS FOR DASHBOARD ---
+@router.get("/stats")
+def get_dashboard_stats(current_user: dict = Depends(get_current_user)):
+    # 🔒 PROTECTED
+    total = 0
+    anomalies = 0
+    total_cable = 0
+    
+    if os.path.exists(HISTORY_PATH):
+        try:
+            with open(HISTORY_PATH, mode='r', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                rows = list(reader)
+                total = len(rows)
+                for row in rows:
+                    if row["Status"] == "ANOMALY":
+                        anomalies += 1
+                    try: total_cable += float(row["Cable_m"])
+                    except: pass
+        except: pass
+    
+    success_rate = 100
+    if total > 0:
+        success_rate = round(((total - anomalies) / total) * 100, 1)
+
+    return {
+        "total_interventions": total,
+        "anomalies_count": anomalies,
+        "success_rate": success_rate,
+        "total_cable_km": round(total_cable / 1000, 2)
+    }
